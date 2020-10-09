@@ -184,24 +184,40 @@ Then we are setting the height as averaged heights of points (x-1,y-1) and (x+1,
 ```
 Let’s look at the algorithm visualized.
 We are filling the first line heights (big black numbers) and deltas (small red numbers).
-![step1](https://github.com/ilmenit/PrevLineHeightmap/2d-1.png)
+
+![step1](https://github.com/ilmenit/PrevLineHeightmap/blob/main/2d-1.png)
+
 In the first row, the deltaX is set to be equal deltaY, therefore we modify it (here from 0 to -1).
-![step2](https://github.com/ilmenit/PrevLineHeightmap/2d-2.png)
+
+![step2](https://github.com/ilmenit/PrevLineHeightmap/blob/main/2d-2.png)
+
 Second step is setting of height, which is averaged value of 2 cells from previous line (14+15)/2 = 14, with added delta (-1) = 13.
-![step3](https://github.com/ilmenit/PrevLineHeightmap/2d-3.png)
+
+![step3](https://github.com/ilmenit/PrevLineHeightmap/blob/main/2d-3.png)
 
 In the next cell, previous deltas vertically and horizontally are not qual, therefore with 50% probability we set deltaX as one of them (here as deltaY, so deltaX = +1).
-![step4](https://github.com/ilmenit/PrevLineHeightmap/2d-4.png)
+
+![step4](https://github.com/ilmenit/PrevLineHeightmap/blob/main/2d-4.png)
+
 Then we are setting the height as averaged height of cells from previous line (14+16)/2 = 15, modified by deltaX = 16.
-![step5](https://github.com/ilmenit/PrevLineHeightmap/2d-5.png)
+
+![step5](https://github.com/ilmenit/PrevLineHeightmap/blob/main/2d-5.png)
+
 For the next cell previous deltas are equal, therefore we modify deltaX by [-1,1], here by +1 to +2.
-![step6](https://github.com/ilmenit/PrevLineHeightmap/2d-6.png)
+
+![step6](https://github.com/ilmenit/PrevLineHeightmap/blob/main/2d-6.png)
+
 The height is averaged value from previous cells modified by delta:
-![step7](https://github.com/ilmenit/PrevLineHeightmap/2d-7.png)
+
+![step7](https://github.com/ilmenit/PrevLineHeightmap/blob/main/2d-7.png)
+
 Algorithm continues until the whole heightmap is filled.
-![finished](https://github.com/ilmenit/PrevLineHeightmap/canvas.png)
+
+![finished](https://github.com/ilmenit/PrevLineHeightmap/blob/main/canvas.png)
+
 For 3D visualization of the heightmap I modified terrain example from 
  [“PlayfulJS Terrain” by Hunter Loftis](http://www.playfuljs.com/realistic-terrain-in-130-lines/)
-![3d](https://github.com/ilmenit/PrevLineHeightmap/index.png)
+
+![3d](https://github.com/ilmenit/PrevLineHeightmap/blob/main/index.png)
 
 The algorithm generates bumpy terrain without local details, which was preferred for my purpose. For extra details a second “rough” layer could be added to the generated heightmap, using the same algorithm and delta values between [-1,1] instead of [-3,3].
