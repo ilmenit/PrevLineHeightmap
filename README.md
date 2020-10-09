@@ -1,9 +1,9 @@
 # PrevLineHeightmap
-## Algorithm to generate infinite heightmap using single line of data
+## Algorithm for procedural generation of infinite terrain (heightmap) using single line of data
 
 ![3d](https://github.com/ilmenit/PrevLineHeightmap/blob/main/index.png)
 
-For one project I needed to generate an infinite terrain heightmap. The platform was old 8bit computer with lack of computational power, multiplication instructions or floating point operations for sophisticated algorithms like Perlin/Simplex noise. [Diamond-square algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm) is fast but requires all the heightmap available in the memory therefore cannot be easily used for infinite terrain generation ([there are variants for this purpose though](https://stackoverflow.com/questions/4977946/making-the-diamond-square-fractal-algorithm-infinite) but it would be complicated to implement on 8bit platform).
+For one project I needed to generate procedurally an infinite terrain heightmap. The platform was old 8bit computer with lack of computational power, multiplication instructions or floating point operations for sophisticated algorithms like Perlin/Simplex noise. [Diamond-square algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm) is fast but requires all the heightmap available in the memory therefore cannot be easily used for infinite terrain generation ([there are variants for this purpose though](https://stackoverflow.com/questions/4977946/making-the-diamond-square-fractal-algorithm-infinite) but it would be complicated to implement on 8bit platform).
 
 My first attempt was done by implementing an "old-school" plasma effect, by sum of 2D sine functions of different amplitudes and periods, similarly to https://www.bidouille.org/prog/plasma . The effect however was too regular, and I needed something more random. 
 
