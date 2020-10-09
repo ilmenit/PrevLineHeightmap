@@ -1,0 +1,179 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Terrain Demo - PlayfulJS</title>
+  </head>
+  <body style='background: #000'>
+    <canvas id='display' width='1' height='1' />
+
+    <script>
+
+      function Terrain(detail) {
+        this.size = Math.pow(2, detail);
+        this.max = this.size - 1;
+		this.height_min = 0;
+		this.height_max = this.max;
+        this.map = new Float32Array(this.size * this.size);
+      }
+
+      Terrain.prototype.get = function(x, y) {
+        if (x < 0 || x > this.max || y < 0 || y > this.max) return -1;
+        return this.map[x + this.size * y];
+      };
+
+      Terrain.prototype.set = function(x, y, val) {
+        this.map[x + this.size * y] = val;
+      };
+	  
+	  // modifies delta by [-max_delta,+max_delta]
+	  Terrain.prototype.modify_delta = function(delta) {
+		const max_delta = 3;
+		var r = Math.random();
+		if (Math.random() >= 0.5)
+			r *= -1;		
+		delta += r;
+		if (delta > max_delta)
+			delta = max_delta;
+		if (delta < -max_delta)
+			delta = -max_delta;
+		return delta;
+	  };
+	  
+	  Terrain.prototype.add_delta_to_height = function(height, delta)
+	  {
+			height += delta;
+			
+			if (height > this.height_max)
+			{
+				delta *= -1;
+				height = this.height_max;
+			}
+			else if (height < this.height_min)
+			{
+				// delta *= -1; // more mountains
+				delta = 0; // more water
+				// delta = delta; // even more water (islands)
+				height = this.height_min;
+			}
+			var result = [height,delta];
+			return result;
+	};
+
+
+      Terrain.prototype.generate = function() {
+        var self = this;
+
+		var deltas = new Array(this.size);
+		var deltaX=0;
+		var y=0;
+		var height=128; // base value
+		
+		// init first line
+		for (var x = 0; x < this.size; ++x)
+		{
+			deltaX = this.modify_delta(deltaX);
+			deltas[x] = deltaX;
+			var v = this.add_delta_to_height(height, deltaX);
+			height = v[0];
+			deltaX = v[1];
+			this.set(x,y,height);
+		}
+		// init next lines
+		for (y = 1; y < this.size; ++y)
+		{
+			deltaX = deltas[0];
+			for (x = 0; x < this.size; ++x)
+			{
+				// Step 1. Modify delta
+				deltaY = deltas[x];
+
+				// if equal, we can modify it
+				if (deltaY == deltaX)
+				{
+					deltaX = this.modify_delta(deltaX);
+				}
+				else
+				{
+					// if not equal, then becomes one of them
+					// delta we have from previous X, so it may become one from y
+					if (Math.random() >= 0.5)
+						deltaX = deltaY;
+				}
+
+				// Step 2. set height
+				height =  this.get((x > 0 ? x-1: 0),y-1); // clamped x-1
+				height += this.get((x < this.max ? x+1 : this.max),y-1); // clamped x+1
+				height /= 2;
+
+				var v = this.add_delta_to_height(height, deltaX);
+				height = v[0];
+				deltaX = v[1];
+				this.set(x,y,height);
+				deltas[x] = deltaX;
+			}
+		}				
+      };
+
+      Terrain.prototype.draw = function(ctx, width, height) {
+        var self = this;
+        var waterVal = this.size * 0.3;
+
+        for (var y = 0; y < this.size; y++) {
+          for (var x = 0; x < this.size; x++) {
+            var val = this.get(x, y);
+            var top = project(x, y, val);
+            var bottom = project(x + 1, y, 0);
+            var water = project(x, y, waterVal);
+            var style = brightness(x, y, this.get(x + 1, y) - val);
+
+            rect(top, bottom, style);
+            rect(water, bottom, 'rgba(50, 150, 200, 0.15)');
+          }
+        }
+
+        function rect(a, b, style) {
+          if (b.y < a.y) return;
+          ctx.fillStyle = style;
+          ctx.fillRect(a.x, a.y, b.x - a.x, b.y - a.y);
+        }
+
+        function brightness(x, y, slope) {
+          if (y === self.max || x === self.max) return '#000';
+          var b = ~~(slope * 50) + 128;
+          return ['rgba(', b, ',', b, ',', b, ',1)'].join('');
+        }
+
+        function iso(x, y) {
+          return {
+            x: 0.5 * (self.size + x - y),
+            y: 0.5 * (x + y)
+          };
+        }
+
+        function project(flatX, flatY, flatZ) {
+          var point = iso(flatX, flatY);
+          var x0 = width * 0.5;
+          var y0 = height * 0.2;
+          var z = self.size * 0.5 - flatZ + point.y * 0.75;
+          var x = (point.x - self.size * 0.5) * 6;
+          var y = (self.size - point.y) * 0.005 + 1;
+
+          return {
+            x: x0 + x / y,
+            y: y0 + z / y
+          };
+        }
+      };
+
+      var display = document.getElementById('display');
+      var ctx = display.getContext('2d');
+      var width = display.width = window.innerWidth;
+      var height = display.height = window.innerHeight;
+
+      var terrain = new Terrain(9);
+      terrain.generate();
+      terrain.draw(ctx, width, height);
+
+    </script>
+  </body>
+</html>

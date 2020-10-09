@@ -1,0 +1,63 @@
+<button id="draw">Draw</button><br>
+<canvas id="canvas" width="640" height="256"></canvas>
+<script>
+var canvas = document.getElementById("canvas");
+var canvasWidth = canvas.width;
+var canvasHeight = canvas.height;
+var ctx = canvas.getContext("2d");
+const height_max = canvasHeight;
+
+document.getElementById("draw").onclick = draw;
+
+function modify_delta(delta) {
+    const max_delta = 3;
+    var r = Math.random();
+    if (Math.random() >= 0.5)
+        r *= -1;
+    delta += r;
+    if (delta > max_delta)
+        delta = max_delta;
+    if (delta < -max_delta)
+        delta = -max_delta;
+    return delta;
+};
+
+function modify_height(height, delta) {
+    var new_height = height + delta;
+	var new_delta = delta;
+	if (new_height<0)
+	{
+		new_height=0;
+		// delta = delta; // more islands
+		// delta=0; // less water
+		// delta = -delta; // even less water
+	}
+	else if (new_height > height_max)
+	{
+		new_height = height_max;
+		new_delta = -delta; // peaks
+	}
+    return [new_height,new_delta];
+}
+
+function draw() {
+    var deltaX = 0;
+    var x = 0;
+    var height = height_max/2;
+
+	ctx.beginPath();
+	ctx.fillStyle = '#AAA';
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.moveTo(x, height);
+
+    for (var x = 0; x < canvasWidth; ++x) {
+	  deltaX = modify_delta(deltaX);
+      values = modify_height(height, deltaX);
+	  height = values[0];
+	  deltaX = values[1];
+      ctx.lineTo(x, height_max-height); 
+    }
+	ctx.stroke();
+}
+</script>

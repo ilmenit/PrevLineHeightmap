@@ -1,0 +1,106 @@
+<button id="draw">Draw</button><br>
+<canvas id="canvas" width="1024" height="768"></canvas>
+<script>
+var canvas = document.getElementById("canvas");
+var canvasWidth = canvas.width;
+var canvasHeight = canvas.height;
+var ctx = canvas.getContext("2d");
+const height_max = canvasHeight;
+var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
+function setHeight (x, y, height) {
+    var index = (x + y * canvasWidth) * 4;
+    canvasData.data[index + 0] = height;
+    canvasData.data[index + 1] = height;
+    canvasData.data[index + 2] = height;
+    canvasData.data[index + 3] = 255;
+}
+
+function getHeight (x, y) {
+    var index = (x + y * canvasWidth) * 4;
+	return canvasData.data[index]; // r in rgba
+}
+
+document.getElementById("draw").onclick = draw;
+
+function modify_delta(delta) {
+    const max_delta = 3;
+    var r = Math.random();
+    if (Math.random() >= 0.5)
+        r *= -1;
+    delta += r;
+    if (delta > max_delta)
+        delta = max_delta;
+    if (delta < -max_delta)
+        delta = -max_delta;
+    return delta;
+};
+
+function modify_height(height, delta) {
+    var new_height = height + delta;
+	var new_delta = delta;
+	if (new_height<0)
+	{
+		new_height=0;
+	}
+	else if (new_height > height_max)
+	{
+		new_height = height_max;
+		new_delta = -delta;
+	}
+    return [new_height,new_delta];
+}
+
+function draw() {
+    var deltaX = 0;
+    var x = 0;
+    var height = height_max/2;
+    var deltas = new Array(canvasWidth);
+
+	// init first line
+	for (var x = 0; x < canvasWidth; ++x) {
+      deltaX = modify_delta(deltaX);
+	  deltas[x] = deltaX; 
+ 	  values = modify_height(height, deltaX);
+	  height = values[0];
+	  deltaX = values[1];
+	  setHeight(x, 0, height);
+	}
+	
+	// the rest of heightmap
+	
+	for (var y=1; y < canvasHeight; ++y) {
+			deltaX = deltas[0]; 
+			for (var x = 0; x < canvasWidth; ++x) 
+			{
+				// Step 1. Modify delta
+				deltaY = deltas[x];
+
+				// if equal, we can modify it
+				if (deltaY == deltaX)
+				{
+					deltaX = modify_delta(deltaX);
+				}
+				else
+				{
+					// if not equal, then becomes one of them
+					// delta we have from previous X, so it may become one from y
+					if (Math.random() >= 0.5)
+						deltaX = deltaY;
+				}
+
+				// Step 2. set height
+				height =  getHeight((x > 0 ? x-1: 0),y-1); // clamped x-1
+				height += getHeight((x < canvasWidth ? x+1 : canvasWidth),y-1); // clamped x+1
+				height /= 2;
+
+				var v = modify_height(height, deltaX);
+				height = v[0];
+				deltaX = v[1];
+				setHeight(x, y, height);
+				deltas[x] = deltaX; 			
+			}
+	}
+    ctx.putImageData(canvasData, 0, 0);
+}
+</script>`
