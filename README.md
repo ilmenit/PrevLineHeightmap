@@ -213,7 +213,7 @@ The height is averaged value from previous cells modified by delta:
 
 Algorithm continues until the whole heightmap is filled.
 
-![finished](https://github.com/ilmenit/PrevLineHeightmap/blob/main/canvas.png)
+![finished](https://github.com/ilmenit/PrevLineHeightmap/blob/main/heightmap.png)
 
 For 3D visualization of the heightmap I modified terrain example from 
  [“PlayfulJS Terrain” by Hunter Loftis](http://www.playfuljs.com/realistic-terrain-in-130-lines/)
