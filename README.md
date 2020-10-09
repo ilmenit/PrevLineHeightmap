@@ -1,5 +1,8 @@
 # PrevLineHeightmap
 ## Algorithm to generate infinite heightmap using single line of data
+
+![3d](https://github.com/ilmenit/PrevLineHeightmap/blob/main/index.png)
+
 For one project I needed to generate an infinite terrain heightmap. The platform was an old 8bit computer without enough computational power for sophisticated algorithms like Perlin/Simplex noise. Diamond-square algorithm https://en.wikipedia.org/wiki/Diamond-square_algorithm is fast but requires all the heightmap available in the memory therefore cannot be easily used for infinite terrain generation (there are variants for this purpose though https://stackoverflow.com/questions/4977946/making-the-diamond-square-fractal-algorithm-infinite but it would be overkill for this platform).
 
 My first attempt was done by implementing an "old-school" plasma effect, by sum of 2D sine functions of different amplitudes and periods, similarly to https://www.bidouille.org/prog/plasma . The effect however was too regular, and I needed something more random. 
@@ -45,6 +48,10 @@ function draw() {
     ctx.stroke();
 }
 ```
+
+![demo1](https://github.com/ilmenit/PrevLineHeightmap/blob/main/1.png)
+[Demo1](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/1.html)
+
  Generated 1D heightmap is not as good-looking as with midpoint displacement algorithm https://bitesofcode.wordpress.com/2016/12/23/landscape-generation-using-midpoint-displacement/ because of oscillation close to the average value. How can we achieve steeper mountains, still with delta in range [-3,3]? We can add inertia to delta, so the big changes are not instant. Instead of assigning it a random value, we can modify the delta value by [-1,1], keeping it clamped to [-3,3] range. This way we achieve higher, less rough and more sine-like mountains.
 ```javascript
 function modify_delta(delta) {
@@ -60,6 +67,10 @@ function modify_delta(delta) {
     return delta;
 };
 ```
+
+![demo2](https://github.com/ilmenit/PrevLineHeightmap/blob/main/2.png)
+[Demo2](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/2.html)
+
 The effect is better, however we need to clamp also the height. Simple clamping of height to [0,height_max] is not enough, because the mountains become flat reaching the height_max.
 ```javascript
 function modify_height(height, delta) {
@@ -71,6 +82,10 @@ function modify_height(height, delta) {
     return new_height;
 }
 ```
+
+![demo3](https://github.com/ilmenit/PrevLineHeightmap/blob/main/3.png)
+[Demo3](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/3.html)
+
 We need an improved clamping. The aim was to have peaky mountains and to achieve it we can revert the delta value when it reaches the height_max. The higher the delta was before reverting, the peakier the mountain will be.
 ```javascript
 function modify_height(height, delta) {
@@ -88,6 +103,10 @@ function modify_height(height, delta) {
     return [new_height, new_delta];
 }
 ```
+
+![demo4](https://github.com/ilmenit/PrevLineHeightmap/blob/main/4.png)
+[Demo4](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/4.html)
+
 Having 1D generation we can move to 2D. The main constrain stays as we want to keep the steepness (delta value) in range [3,3], but in 2D on both axes X and Y.
 Lets start with the full algorithm:
 ```javascript
@@ -134,6 +153,10 @@ for (var y = 1; y < canvasHeight; ++y) {
     }
 }
 ```
+
+![demo4](https://github.com/ilmenit/PrevLineHeightmap/blob/main/5.png)
+[Demo4](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/5.html)
+
 The algorithm is reading data only from the last generated line and is using one extra array for deltas, with size equal width of the map:
 ```javascript
 var deltas = new Array(canvasWidth);
@@ -217,7 +240,5 @@ Algorithm continues until the whole heightmap is filled.
 
 For 3D visualization of the heightmap I modified terrain example from 
  [“PlayfulJS Terrain” by Hunter Loftis](http://www.playfuljs.com/realistic-terrain-in-130-lines/)
-
-![3d](https://github.com/ilmenit/PrevLineHeightmap/blob/main/index.png)
 
 The algorithm generates bumpy terrain without local details, which was preferred for my purpose. For extra details a second “rough” layer could be added to the generated heightmap, using the same algorithm and delta values between [-1,1] instead of [-3,3].
