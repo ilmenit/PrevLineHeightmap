@@ -244,3 +244,5 @@ For 3D visualization of the heightmap I modified terrain example from
 For the PrevLineHeightmap algorithm you can [try it here](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/index.html) - refresh page to generate a next terrain.
 
 The algorithm generates bumpy terrain without local details, which was preferred for my purpose. For extra details a second “rough” layer could be added to the generated heightmap, using the same algorithm and delta values between [-1,1] instead of [-3,3].
+
+The terrain can be extended easily vertically (one line of deltas needed to be stored per map move direction). How to approach horizontal generation? One option can be to calculate per each position x,y a simple hash of x and y values, that will be used as seed for pseudorandom number generator. 
