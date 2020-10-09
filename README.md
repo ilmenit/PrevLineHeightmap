@@ -241,6 +241,6 @@ Algorithm continues until the whole heightmap is filled.
 For 3D visualization of the heightmap I modified terrain example from 
  [“PlayfulJS Terrain” by Hunter Loftis](http://www.playfuljs.com/realistic-terrain-in-130-lines/)
  
-For the PrevLineHeightmap algorithm you can [try it here](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/index.html)
+For the PrevLineHeightmap algorithm you can [try it here](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/index.html) - refresh page to generate a next terrain.
 
 The algorithm generates bumpy terrain without local details, which was preferred for my purpose. For extra details a second “rough” layer could be added to the generated heightmap, using the same algorithm and delta values between [-1,1] instead of [-3,3].
