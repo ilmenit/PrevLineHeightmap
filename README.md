@@ -161,7 +161,7 @@ The algorithm is reading data only from the last generated line and is using one
 ```javascript
 var deltas = new Array(canvasWidth);
 ```
-The algorithm first fills the first line, exactly like we did for the 1D heightmap:
+Heightmap generation starts by filling the first line, exactly like we did for the 1D heightmap:
 ```javascript
 var deltas = new Array(canvasWidth);
 
