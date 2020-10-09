@@ -7,7 +7,7 @@ For one project I needed to generate an infinite terrain heightmap. The platform
 
 My first attempt was done by implementing an "old-school" plasma effect, by sum of 2D sine functions of different amplitudes and periods, similarly to https://www.bidouille.org/prog/plasma . The effect however was too regular, and I needed something more random. 
 
-A simple terrain I implemented previously in small, 256 bytes long intro https://www.pouet.net/prod.php?which=86217 where height lines were independent (1D) and were changing naively by adding random [-1,0,+1] value to the height of previous column. Considering straightforward approach (and code size constrains) the effect was fine, but the landscape generated this way was very flat.
+A simple terrain I implemented previously in small, [256 bytes long intro](https://www.pouet.net/prod.php?which=86217) where height lines were independent (1D) and were changing naively by adding random [-1,0,+1] value to the height of previous column. Considering straightforward approach (and code size constrains) the effect was fine, but the landscape generated this way was very flat.
 
 For the new project I wanted steeper and peaky mountains so the local change (let’s call this value delta) of height had to be in range [-3,-3] instead of just [-1,1]. The delta value between heightmap pixels can be totally random, each time between [-3,3], which generates “rough” terrain oscillating around the average value. Let’s write a simple code that generates 1D lines with delta [-3,3] by assigning it value 6*Math.random()-3
 
