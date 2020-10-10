@@ -142,7 +142,7 @@ for (var y = 1; y < canvasHeight; ++y) {
 
         // Step 2. set height
         height = getHeight((x > 0 ? x - 1 : 0), y - 1); // clamped x-1
-        height += getHeight((x < canvasWidth ? x + 1 : canvasWidth), y - 1); // clamped x+1
+        height += getHeight((x < canvasWidth ? x + 1 : canvasWidth-1), y - 1); // clamped x+1
         height /= 2;
 
         var v = modify_height(height, deltaX);
@@ -197,7 +197,7 @@ Then we are setting the height as averaged heights of points (x-1,y-1) and (x+1,
 ```javascript
         // Step 2. set height
         height = getHeight((x > 0 ? x - 1 : 0), y - 1); // clamped x-1
-        height += getHeight((x < canvasWidth ? x + 1 : canvasWidth), y - 1); // clamped x+1
+        height += getHeight((x < canvasWidth ? x + 1 : canvasWidth-1), y - 1); // clamped x+1
         height /= 2;
 
         var v = modify_height(height, deltaX);
