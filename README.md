@@ -154,8 +154,8 @@ for (var y = 1; y < canvasHeight; ++y) {
 }
 ```
 
-![demo4](https://github.com/ilmenit/PrevLineHeightmap/blob/main/5.png)
-[Demo4](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/5.html)
+![demo5](https://github.com/ilmenit/PrevLineHeightmap/blob/main/5.png)
+[Demo5](https://htmlpreview.github.io/?https://github.com/ilmenit/PrevLineHeightmap/blob/main/5.html)
 
 The algorithm is reading data only from the last generated line and is using one extra array for deltas, with size equal width of the map:
 ```javascript
